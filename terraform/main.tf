@@ -7,7 +7,7 @@ resource "google_compute_subnetwork" "vpc_subnet" {
   name          = "${var.project_name}-subnet"
   ip_cidr_range = "10.2.0.0/16"
   region        = var.region
-  network       = google_compute_network.custom-vpc_network.id
+  network       = google_compute_network.vpc_network.id
 }
 
 resource "google_dns_managed_zone" "dns_private_zone" {
@@ -65,7 +65,7 @@ resource "google_compute_firewall" "compute_internal_firewall" {
 
 # GKE 
 resource "google_container_cluster" "gke_cluster" {
-  name     = "${var.project_id}-gke-cluster"
+  name     = "${var.project_name}-cluster"
   location = var.region
   
   # We can't create a cluster with no node pool defined, but we want to only use
@@ -80,10 +80,10 @@ resource "google_container_cluster" "gke_cluster" {
 
 # Separately Managed Node Pool
 resource "google_container_node_pool" "gke_nodepool" {
-  name       = "${google_container_cluster.gke_cluster.name}-node-pool"
+  name       = "${var.project_name}-pool"
   location   = var.region
   cluster    = google_container_cluster.gke_cluster.name
-  node_count = var.k8s_nodes[count]
+  node_count = var.k8s_nodes["count"]
 
   node_config {
     oauth_scopes = [
@@ -93,11 +93,10 @@ resource "google_container_node_pool" "gke_nodepool" {
 
     labels = {
       project = var.project_name
-
     }
 
     # preemptible  = true
-    machine_type = var.k8s_nodes[type]
+    machine_type = var.k8s_nodes["type"]
     tags         = ["gke-node", "${var.project_name}"]
     metadata = {
       disable-legacy-endpoints = "true"

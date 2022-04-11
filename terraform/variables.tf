@@ -1,7 +1,7 @@
 variable "project_id" {}
 
 variable "project_name" {
-  default = "gke-k8s"
+  default = "gke-learning"
 }
 
 variable "region" {

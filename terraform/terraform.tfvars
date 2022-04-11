@@ -1,6 +1,6 @@
 project_id = "kube-project-344514"
 
 k8s_nodes = {
-  count = 3
+  count = 1
   type  = "e2-medium"
 }

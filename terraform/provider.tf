@@ -5,6 +5,10 @@ terraform {
       version = "4.15.0"
     }
   }
+  backend "gcs" {
+    bucket = "tf-state-kube-project-344514"
+    prefix = "gke"
+  }
 }
 
 provider "google" {
