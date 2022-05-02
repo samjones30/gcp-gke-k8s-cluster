@@ -33,7 +33,7 @@ jobs:
           command: |
             terraform init -input=false
             terraform plan
-  plan_terraform:
+  apply_terraform:
     working_directory: /terraform
     docker:
       - image: docker.mirror.hashicorp.services/hashicorp/terraform:light
