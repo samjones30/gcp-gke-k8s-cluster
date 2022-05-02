@@ -2,50 +2,44 @@ version: 2.1
 
 jobs:
   format_terraform:
-    working_directory: ~/terraform
     docker:
       - image: docker.mirror.hashicorp.services/hashicorp/terraform:light
     steps:
+      - checkout
       - run:
           name: Check Terraform formatting
           command: |
-            terraform fmt
+            terraform fmt -chdir=./terraform
   validate_terraform:
-    working_directory: ~/terraform
     docker:
       - image: docker.mirror.hashicorp.services/hashicorp/terraform:light
     steps:
+      - checkout
       - run:
           name: Validate Terraform
           command: |
-            terraform init
-            terraform validate
+            terraform init -chdir=./terraform
+            terraform validate -chdir=./terraform
   plan_terraform:
-    working_directory: ~/terraform
     docker:
       - image: docker.mirror.hashicorp.services/hashicorp/terraform:light
     steps:
-      - run:
-          name: Checks
-          command: |
-            echo "Checking local directory"
-            ls -ltr
-            pwd
+      - checkout
       - run:
           name: Plan Terraform
           command: |
-            terraform init
-            terraform plan
+            terraform init -chdir=./terraform
+            terraform plan -chdir=./terraform
   apply_terraform:
-    working_directory: ~/terraform
     docker:
       - image: docker.mirror.hashicorp.services/hashicorp/terraform:light
     steps:
+      - checkout
       - run:
           name: Apply Terraform
           command: |
-            terraform init
-            terraform apply --auto-approve=true
+            terraform init -chdir=./terraform
+            terraform apply -chdir=./terraform --auto-approve=true
 
 workflows:
   terraform_workflow:
