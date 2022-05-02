@@ -5,27 +5,27 @@ orbs:
 
 jobs:
   format_terraform:
-    exectutor: terraform/default
+    executor: terraform/default
     working_directory: /terraform
     steps:
       - checkout
       - terraform/fmt
   validate_terraform:
-    exectutor: terraform/default
+    executor: terraform/default
     working_directory: /terraform
     steps:
       - checkout
       - terraform/init
       - terraform/validate
   plan_terraform:
-    exectutor: terraform/default
+    executor: terraform/default
     working_directory: /terraform
     steps:
       - checkout
       - terraform/init
       - terraform/plan
   apply_terraform:
-    exectutor: terraform/default
+    executor: terraform/default
     working_directory: /terraform
     steps:
       - checkout
