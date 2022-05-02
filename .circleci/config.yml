@@ -1,18 +1,32 @@
 version: 2.1
-
-jobs:
-  terraform-format:
-    working_directory: /terraform
-    docker:
-      - image: docker.mirror.hashicorp.services/hashicorp/terraform:light
-    steps:
-      - checkout
-      - run:
-          name: terraform check formatting
-          command: |
-            terraform fmt
-
+orbs:
+  terraform: "circleci/terraform@1.1.0"
 workflows:
-  terraform-workflow:
+  deploy_infrastructure:
     jobs:
-      - terraform-format
+      - terraform/fmt:
+          checkout: true
+          context: terraform
+      - terraform/validate:
+          checkout: true
+          context: terraform
+          requires:
+            - terraform/fmt
+      - terraform/plan:
+          checkout: true
+          context: terraform
+          persist-workspace: true
+          requires:
+            - terraform/validate
+      - hold-apply:
+          type: approval
+          requires:
+            - terraform/plan
+      - terraform/apply:
+          attach-workspace: true
+          context: terraform
+          filters:
+            branches:
+              only: master
+          requires:
+            - hold-apply
