@@ -1,0 +1,18 @@
+version: 2.1
+
+jobs:
+  terraform-format:
+    working_directory: /terraform
+    docker:
+      - image: docker.mirror.hashicorp.services/hashicorp/terraform:light
+    steps:
+      - checkout
+      - run:
+          name: terraform check formatting
+          command: |
+            terraform fmt
+
+workflows:
+  terraform-workflow:
+    jobs:
+      - terraform-format
