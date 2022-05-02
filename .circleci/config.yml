@@ -53,6 +53,9 @@ workflows:
             - validate_terraform
       - hold_apply:
           type: approval
+          filters:
+            branches:
+              only: master
           requires:
             - plan_terraform
       - apply_terraform:
