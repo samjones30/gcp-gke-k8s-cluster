@@ -49,4 +49,4 @@ workflows:
             branches:
               only: master
           requires:
-            - hold-apply
+            - hold_apply
