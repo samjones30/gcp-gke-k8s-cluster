@@ -9,7 +9,7 @@ jobs:
       - run:
           name: Check Terraform formatting
           command: |
-            terraform fmt -chdir=./terraform
+            terraform -chdir=./terraform fmt
   validate_terraform:
     docker:
       - image: docker.mirror.hashicorp.services/hashicorp/terraform:light
@@ -18,8 +18,8 @@ jobs:
       - run:
           name: Validate Terraform
           command: |
-            terraform init -chdir=./terraform
-            terraform validate -chdir=./terraform
+            terraform -chdir=./terraform init
+            terraform -chdir=./terraform validate
   plan_terraform:
     docker:
       - image: docker.mirror.hashicorp.services/hashicorp/terraform:light
@@ -28,8 +28,8 @@ jobs:
       - run:
           name: Plan Terraform
           command: |
-            terraform init -chdir=./terraform
-            terraform plan -chdir=./terraform
+            terraform -chdir=./terraform init
+            terraform -chdir=./terraform plan
   apply_terraform:
     docker:
       - image: docker.mirror.hashicorp.services/hashicorp/terraform:light
@@ -38,8 +38,8 @@ jobs:
       - run:
           name: Apply Terraform
           command: |
-            terraform init -chdir=./terraform
-            terraform apply -chdir=./terraform --auto-approve=true
+            terraform -chdir=./terraform init
+            terraform -chdir=./terraform apply --auto-approve=true
 
 workflows:
   terraform_workflow:
