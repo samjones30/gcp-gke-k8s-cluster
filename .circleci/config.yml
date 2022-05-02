@@ -8,27 +8,23 @@ jobs:
     executor: terraform/default
     working_directory: /terraform
     steps:
-      - checkout
       - terraform/fmt
   validate_terraform:
     executor: terraform/default
     working_directory: /terraform
     steps:
-      - checkout
       - terraform/init
       - terraform/validate
   plan_terraform:
     executor: terraform/default
     working_directory: /terraform
     steps:
-      - checkout
       - terraform/init
       - terraform/plan
   apply_terraform:
     executor: terraform/default
     working_directory: /terraform
     steps:
-      - checkout
       - terraform/init
       - terraform/apply
 
