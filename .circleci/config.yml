@@ -1,26 +1,50 @@
 version: 2.1
+
 orbs:
   terraform: "circleci/terraform@3.0.1"
+
+jobs:
+  format_terraform:
+    exectutor: terraform/default
+    working_directory: /terraform
+    steps:
+      - checkout
+      - terraform/fmt
+  validate_terraform:
+    exectutor: terraform/default
+    working_directory: /terraform
+    steps:
+      - checkout
+      - terraform/init
+      - terraform/validate
+  plan_terraform:
+    exectutor: terraform/default
+    working_directory: /terraform
+    steps:
+      - checkout
+      - terraform/init
+      - terraform/plan
+  apply_terraform:
+    exectutor: terraform/default
+    working_directory: /terraform
+    steps:
+      - checkout
+      - terraform/init
+      - terraform/apply
+
 workflows:
-  deploy_infrastructure:
+  terraform_workflow:
     jobs:
-      - terraform/fmt:
-          checkout: true
-      - terraform/validate:
-          checkout: true
+      - format_terraform
+      - validate_terraform
+      - plan_terraform:
           requires:
-            - terraform/fmt
-      - terraform/plan:
-          checkout: true
-          persist-workspace: true
-          requires:
-            - terraform/validate
-      - hold-apply:
+            - validate_terraform
+      - hold_apply:
           type: approval
           requires:
-            - terraform/plan
-      - terraform/apply:
-          attach-workspace: true
+            - plan_terraform
+      - apply_terraform:
           filters:
             branches:
               only: master
