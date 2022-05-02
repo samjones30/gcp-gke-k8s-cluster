@@ -1,36 +1,49 @@
 version: 2.1
 
-orbs:
-  terraform: "circleci/terraform@3.0.1"
-
 jobs:
   format_terraform:
-    executor: terraform/default
-    working_directory: ~/terraform
+    working_directory: /terraform
+    docker:
+      - image: docker.mirror.hashicorp.services/hashicorp/terraform:light
     steps:
       - checkout
-      - terraform/fmt
+      - run:
+          name: Check Terraform formatting
+          command: |
+            terraform fmt
   validate_terraform:
-    executor: terraform/default
     working_directory: /terraform
+    docker:
+      - image: docker.mirror.hashicorp.services/hashicorp/terraform:light
     steps:
       - checkout
-      - terraform/init
-      - terraform/validate
+      - run:
+          name: Validate Terraform
+          command: |
+            terraform init -input=false
+            terraform validate
   plan_terraform:
-    executor: terraform/default
     working_directory: /terraform
+    docker:
+      - image: docker.mirror.hashicorp.services/hashicorp/terraform:light
     steps:
       - checkout
-      - terraform/init
-      - terraform/plan
-  apply_terraform:
-    executor: terraform/default
+      - run:
+          name: Validate Terraform
+          command: |
+            terraform init -input=false
+            terraform plan
+  plan_terraform:
     working_directory: /terraform
+    docker:
+      - image: docker.mirror.hashicorp.services/hashicorp/terraform:light
     steps:
       - checkout
-      - terraform/init
-      - terraform/apply
+      - run:
+          name: Validate Terraform
+          command: |
+            terraform init -input=false
+            terraform apply --auto-approve=true
 
 workflows:
   terraform_workflow:
