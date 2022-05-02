@@ -11,6 +11,7 @@ jobs:
           command: |
             terraform -chdir=./terraform fmt
   validate_terraform:
+    context: terraform
     docker:
       - image: docker.mirror.hashicorp.services/hashicorp/terraform:light
     steps:
