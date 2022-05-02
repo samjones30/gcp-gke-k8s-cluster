@@ -65,14 +65,14 @@ workflows:
           type: approval
           filters:
             branches:
-              only: master
+              only: main
           requires:
             - plan_terraform
       - apply_terraform:
           context: terraform
           filters:
             branches:
-              only: master
+              only: main
           requires:
             - hold_apply
             - validate_terraform
@@ -82,12 +82,12 @@ workflows:
           type: approval
           filters:
             branches:
-              only: master
+              only: main
       - destroy_terraform:
           context: terraform
           filters:
             branches:
-              only: master
+              only: main
           requires:
             - hold_destroy
 
