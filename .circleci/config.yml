@@ -11,7 +11,6 @@ jobs:
           command: |
             terraform -chdir=./terraform fmt
   validate_terraform:
-    context: terraform
     docker:
       - image: docker.mirror.hashicorp.services/hashicorp/terraform:light
     steps:
@@ -46,8 +45,10 @@ workflows:
   terraform_workflow:
     jobs:
       - format_terraform
-      - validate_terraform
+      - validate_terraform:
+          context: terraform
       - plan_terraform:
+          context: terraform
           requires:
             - validate_terraform
       - hold_apply:
@@ -55,8 +56,10 @@ workflows:
           requires:
             - plan_terraform
       - apply_terraform:
+          context: terraform
           filters:
             branches:
               only: master
           requires:
             - hold_apply
+            - validate_terraform
