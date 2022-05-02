@@ -1,18 +1,93 @@
 version: 2.1
 
 jobs:
-  terraform-format:
-    working_directory: /terraform
+  format_terraform:
     docker:
       - image: docker.mirror.hashicorp.services/hashicorp/terraform:light
     steps:
       - checkout
       - run:
-          name: terraform check formatting
+          name: Check Terraform formatting
           command: |
-            terraform fmt
+            terraform -chdir=./terraform fmt
+  validate_terraform:
+    docker:
+      - image: docker.mirror.hashicorp.services/hashicorp/terraform:light
+    steps:
+      - checkout
+      - run:
+          name: Validate Terraform
+          command: |
+            terraform -chdir=./terraform init
+            terraform -chdir=./terraform validate
+  plan_terraform:
+    docker:
+      - image: docker.mirror.hashicorp.services/hashicorp/terraform:light
+    steps:
+      - checkout
+      - run:
+          name: Plan Terraform
+          command: |
+            terraform -chdir=./terraform init
+            terraform -chdir=./terraform plan
+  apply_terraform:
+    docker:
+      - image: docker.mirror.hashicorp.services/hashicorp/terraform:light
+    steps:
+      - checkout
+      - run:
+          name: Apply Terraform
+          command: |
+            terraform -chdir=./terraform init
+            terraform -chdir=./terraform apply --auto-approve=true
+  destroy_terraform:
+    docker:
+      - image: docker.mirror.hashicorp.services/hashicorp/terraform:light
+    steps:
+      - checkout
+      - run:
+          name: Apply Terraform
+          command: |
+            terraform -chdir=./terraform init
+            terraform -chdir=./terraform destroy --auto-approve=true
 
 workflows:
-  terraform-workflow:
+  terraform_workflow:
     jobs:
-      - terraform-format
+      - format_terraform
+      - validate_terraform:
+          context: terraform
+      - plan_terraform:
+          context: terraform
+          requires:
+            - validate_terraform
+      - hold_apply:
+          type: approval
+          filters:
+            branches:
+              only: master
+          requires:
+            - plan_terraform
+      - apply_terraform:
+          context: terraform
+          filters:
+            branches:
+              only: master
+          requires:
+            - hold_apply
+            - validate_terraform
+  terraform_destroy_workflow:
+    jobs:
+      - hold_destroy:
+          type: approval
+          filters:
+            branches:
+              only: master
+      - destroy_terraform:
+          context: terraform
+          filters:
+            branches:
+              only: master
+          requires:
+            - hold_destroy
+
