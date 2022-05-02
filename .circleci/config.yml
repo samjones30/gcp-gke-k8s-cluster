@@ -40,6 +40,16 @@ jobs:
           command: |
             terraform -chdir=./terraform init
             terraform -chdir=./terraform apply --auto-approve=true
+  destroy_terraform:
+    docker:
+      - image: docker.mirror.hashicorp.services/hashicorp/terraform:light
+    steps:
+      - checkout
+      - run:
+          name: Apply Terraform
+          command: |
+            terraform -chdir=./terraform init
+            terraform -chdir=./terraform destroy --auto-approve=true
 
 workflows:
   terraform_workflow:
@@ -66,3 +76,18 @@ workflows:
           requires:
             - hold_apply
             - validate_terraform
+  terraform_destroy_workflow:
+    jobs:
+      - hold_destroy:
+          type: approval
+          filters:
+            branches:
+              only: master
+      - destroy_terraform:
+          context: terraform
+          filters:
+            branches:
+              only: master
+          requires:
+            - hold_destroy
+
