@@ -76,6 +76,23 @@ resource "google_container_cluster" "gke_cluster" {
 
   network    = google_compute_network.vpc_network.name
   subnetwork = google_compute_subnetwork.vpc_subnet.name
+
+  #SNYK-CC-TF-87
+  master_auth {
+    client_certificate_config {
+      issue_client_certificate = false
+    }
+  }
+
+  #SNYK-CC-TF-88
+  pod_security_policy_config {
+    enabled = true
+  }
+
+  #SNYK-CC-TF-84
+  workload_metadata_config {
+    mode = "GKE_METADATA"
+  }
 }
 
 # Separately Managed Node Pool
