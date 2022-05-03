@@ -61,7 +61,7 @@ workflows:
       - validate_terraform:
           context: terraform
       - snyk/scan-iac:
-          args: terraform/
+          args: terraform/ --severity-threshold=high
       - plan_terraform:
           context: terraform
           requires:
