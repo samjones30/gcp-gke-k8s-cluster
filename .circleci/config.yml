@@ -60,7 +60,8 @@ workflows:
       - format_terraform
       - validate_terraform:
           context: terraform
-      - snyk/scan-iac
+      - snyk/scan-iac:
+          args: terraform/
       - plan_terraform:
           context: terraform
           requires:
