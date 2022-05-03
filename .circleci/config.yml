@@ -75,6 +75,7 @@ workflows:
               only: main
           requires:
             - hold_apply
+            - plan_terraform
             - validate_terraform
   terraform_destroy_workflow:
     jobs:
@@ -82,12 +83,12 @@ workflows:
           type: approval
           filters:
             branches:
-              only: main
+              only: /destroy/.*
       - destroy_terraform:
           context: terraform
           filters:
             branches:
-              only: main
+              only: /destroy/.*
           requires:
             - hold_destroy
 
