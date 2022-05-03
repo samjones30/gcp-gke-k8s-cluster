@@ -1,5 +1,8 @@
 version: 2.1
 
+orbs: 
+  snyk: snyk/snyk@1.1.2
+
 jobs:
   format_terraform:
     docker:
@@ -57,6 +60,7 @@ workflows:
       - format_terraform
       - validate_terraform:
           context: terraform
+      - snyk/scan-iac
       - plan_terraform:
           context: terraform
           requires:
