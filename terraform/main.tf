@@ -90,13 +90,6 @@ resource "google_container_cluster" "gke_cluster" {
       mode = "GKE_METADATA"
     }
   }
-
-  #SNYK-CC-TF-88
-  pod_security_policy_config {
-    enabled = true
-  }
-
-  
 }
 
 # Separately Managed Node Pool
